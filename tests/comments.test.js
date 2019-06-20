@@ -4,47 +4,49 @@ const app = require('../lib/app');
 const mongoose = require('mongoose');
 const Comment = require('../lib/models/Comment');
 
-jest.mock('../lib/middleware/ensureAuth.js');
+jest.mock('../lib/middleware/ensure-auth.js');
 
-const createCommentHelper = () => ['one', 'two', 'three'].map((num, i) => {
-  return Comment.create({ body: `I am a comment ${i}`, characterId: `${num}`, user: `${i}` });
-});
+const createCommentHelper = (body, characterId = '1234') => {
+  return Comment.create({ body, characterId, email: 'test@test.com' })
+    .then(comment => JSON.parse(JSON.stringify(comment)));
+};
 
 describe('comments routes test', () => {
   beforeAll(() => {
     return mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
   });
-  
-  beforeEach(() => {
-    return createCommentHelper();
-  });
-  
+
   afterEach(() => {
-    return mongoose.connection.dropDatabase();
+    mongoose.connection.dropDatabase();
   });
-  
+
   afterAll(() => {
     return mongoose.connection.close();
   });
   it('can post a comment', () => {
     return request(app)
-      .post('/comments')
-      .send({ body: 'I am a comment', characterId: '1234'  })
+      .post('/api/v1/comments')
+      .send({ body: 'I am a comment', characterId: '1234' })
       .then(res => {
-        expect(res.body).toEqual({ 
-          body: 'I am a comment', 
-          characterId: '1234', 
-          __v:0,
+        expect(res.body).toEqual({
+          body: 'I am a comment',
+          characterId: '1234',
+          __v: 0,
           _id: expect.any(String),
-          user: '1234'
+          email: 'test@test.com'
         });
       });
   });
-  it('can get all comments', () => {
+  it('can get all comments', async() => {
+    const comments = await Promise.all(
+      [...Array(10)]
+        .map((_, i) => createCommentHelper(`Comment ${i}`)));
     return request(app)
-      .get('/comments')
+      .get('/api/v1/comments/1234')
       .then(res => {
-        expect(res.body).toEqual();
+        comments.forEach(comment => {
+          expect(res.body).toContainEqual(comment);
+        });
       });
 
   });
