@@ -13,7 +13,7 @@ const createCommentHelper = (body, characterId = '1234') => {
 
 describe('comments routes test', () => {
   beforeAll(() => {
-    return mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
+    return mongoose.connect((process.env.MONGODB_URI, { useNewUrlParser: true }));
   });
 
   afterEach(() => {
@@ -23,6 +23,7 @@ describe('comments routes test', () => {
   afterAll(() => {
     return mongoose.connection.close();
   });
+  
   it('can post a comment', () => {
     return request(app)
       .post('/api/v1/comments')
@@ -37,6 +38,7 @@ describe('comments routes test', () => {
         });
       });
   });
+
   it('can get all comments', async() => {
     const comments = await Promise.all(
       [...Array(10)]

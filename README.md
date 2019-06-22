@@ -1,4 +1,4 @@
-* Why do we get "MongoError: topology was destroyed" when running tests?
+<!-- * Why do we get "MongoError: topology was destroyed" when running tests? -->
 
 * Right now we get all comments when we hit the `/api/v1/comments/:characterId` route.
   Fix the route so it only returns comments by `characterId`
