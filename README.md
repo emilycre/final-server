@@ -5,4 +5,4 @@
 
 * Update the routes so that the user's email is stored in the comment
 
-* Add the ability to update and delete a comment
+<!-- * Add the ability to update and delete a comment -->

@@ -88,4 +88,19 @@ describe('comments routes test', () => {
         });
       });
   });
+
+  it('Includes email with comment', () => {
+    return request(app)
+      .post('/api/v1/comments')
+      .send({ body: 'C o m m e n t.', characterId: '0003', email: 'test@test.com' })
+      .then(res => {
+        expect(res.body).toEqual({
+          body: 'C o m m e n t.',
+          characterId: '0003',
+          __v: 0,
+          _id: expect.any(String),
+          email: 'test@test.com'
+        });
+      });
+  });
 });
