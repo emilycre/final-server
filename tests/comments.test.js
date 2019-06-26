@@ -13,7 +13,7 @@ const createCommentHelper = (body, characterId = '1234') => {
 
 describe('comments routes test', () => {
   beforeAll(() => {
-    return mongoose.connect((process.env.MONGODB_URI, { useNewUrlParser: true }));
+    return mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
   });
 
   afterEach(() => {
@@ -23,7 +23,6 @@ describe('comments routes test', () => {
   afterAll(() => {
     return mongoose.connection.close();
   });
-  
   it('can post a comment', () => {
     return request(app)
       .post('/api/v1/comments')
@@ -38,16 +37,17 @@ describe('comments routes test', () => {
         });
       });
   });
-
-  it('can get all comments', async() => {
+  
+  // returns 10 comments all with characterId of '1234'
+  it('can get comment by characterId', async() => {
     const comments = await Promise.all(
       [...Array(10)]
         .map((_, i) => createCommentHelper(`Comment ${i}`)));
     return request(app)
-      .get('/api/v1/comments/1234')
+      .get(`/api/v1/comments/${comments.characterId}`)
       .then(res => {
         comments.forEach(comment => {
-          expect(res.body).toContainEqual(comment);
+          expect(res.body).toEqual(comment);
         });
       });
 
