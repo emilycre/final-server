@@ -51,6 +51,22 @@ describe('comments routes test', () => {
           expect(res.body.comment).toEqual(comment.body.characterId);
         });
       });
-
   });
+
+  it('Can delete a comment', () => {
+    return request(app)
+      .post('/api/v1/comments')
+      .send({ body: 'I am another comment', characterId: '0001' })
+      .then(res => request(app).delete(`/api/v1/comments/${res.body._id}`))
+      .then(res => {
+        expect(res.body).toEqual({
+          body: 'I am another comment',
+          characterId: '0001',
+          __v: 0,
+          _id: expect.any(String),
+          email: 'test@test.com'
+        });
+      });
+  });
+
 });
