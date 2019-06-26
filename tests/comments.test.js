@@ -69,4 +69,23 @@ describe('comments routes test', () => {
       });
   });
 
+  it('Can update a comment', () => {
+    return request(app)
+      .post('/api/v1/comments')
+      .send({ body: 'Yet another one.', characterId: '0002' })
+      .then(res => {
+        return request(app)
+          .patch(`/api/v1/comments/${res.body._id}`)
+          .send({ body: 'Comments forever.' });
+      })
+      .then(res => {
+        expect(res.body).toEqual({
+          body: 'Comments forever.',
+          characterId: '0002',
+          __v: 0,
+          _id: expect.any(String),
+          email: 'test@test.com'
+        });
+      });
+  });
 });
