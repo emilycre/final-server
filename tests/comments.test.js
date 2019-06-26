@@ -3,6 +3,7 @@ const request = require('supertest');
 const app = require('../lib/app');
 const mongoose = require('mongoose');
 const Comment = require('../lib/models/Comment');
+const connect = require('../lib/utils/connect');
 
 jest.mock('../lib/middleware/ensure-auth.js');
 
@@ -13,7 +14,7 @@ const createCommentHelper = (body, characterId = '1234') => {
 
 describe('comments routes test', () => {
   beforeAll(() => {
-    return mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
+    return connect();
   });
 
   afterEach(() => {
@@ -23,6 +24,7 @@ describe('comments routes test', () => {
   afterAll(() => {
     return mongoose.connection.close();
   });
+  
   it('can post a comment', () => {
     return request(app)
       .post('/api/v1/comments')
@@ -38,7 +40,6 @@ describe('comments routes test', () => {
       });
   });
   
-  // returns 10 comments all with characterId of '1234'
   it('Can get a comment by characterId', async() => {
     const comments = await Promise.all(
       [...Array(10)]
