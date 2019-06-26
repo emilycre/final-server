@@ -39,15 +39,15 @@ describe('comments routes test', () => {
   });
   
   // returns 10 comments all with characterId of '1234'
-  it('can get comment by characterId', async() => {
+  it('Can get a comment by characterId', async() => {
     const comments = await Promise.all(
       [...Array(10)]
         .map((_, i) => createCommentHelper(`Comment ${i}`)));
     return request(app)
-      .get(`/api/v1/comments/${comments.characterId}`)
+      .get('/api/v1/comments/1234')
       .then(res => {
         comments.forEach(comment => {
-          expect(res.body).toEqual(comment);
+          expect(res.body.comment).toEqual(comment.body.characterId);
         });
       });
 
